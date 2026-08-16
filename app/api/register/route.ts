@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
     secure: process.env.NODE_ENV === "production",
     sameSite: "strict",
     path: "/",
-    maxAge: 60 * 60,
+    maxAge: 60 * 60 * 6,
   });
 
   return NextResponse.json({ message: "Account created", status: "201" });

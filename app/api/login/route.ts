@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
   let body = await request.json();
 
   const parsed = loginSchema.safeParse(body);
-  //returns {success: true, data: { email: 'test.com', password: 'abasdasdas' } }
+  //returns {success: true, data: { email: 'string', password: 'string' } }
 
   //fail zod
   if (!parsed.success) {
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
     secure: process.env.NODE_ENV === "production", //use https in prod
     sameSite: "strict", //csrf
     path: "/",
-    maxAge: 60 * 60,
+    maxAge: 60 * 60 * 6,
   });
 
   return NextResponse.json({ message: "logged in" }, { status: 200 });

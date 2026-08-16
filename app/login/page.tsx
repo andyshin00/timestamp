@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -26,12 +27,13 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="">
+    <div className="flex min-h-screen flex-col justify-center items-center">
       <h1>Login Form</h1>
       <form onSubmit={handleSubmit}>
-        <div>
+        <div className="flex flex-col">
           <label htmlFor="">Email:</label>
           <input
+            className="border rounded"
             onChange={(e) => {
               setEmail(e.target.value);
             }}
@@ -39,9 +41,10 @@ export default function LoginPage() {
             placeholder="you@gmail.com"
           />
         </div>
-        <div>
+        <div className="flex flex-col">
           <label htmlFor="">Password:</label>
           <input
+            className="border rounded"
             onChange={(e) => {
               setPassword(e.target.value);
             }}
@@ -49,7 +52,9 @@ export default function LoginPage() {
             placeholder="at least 8 characters"
           />
         </div>
-        <button type="submit">Login</button>
+        <button className="border rounded" type="submit">
+          Login
+        </button>
       </form>
     </div>
   );
