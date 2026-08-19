@@ -16,7 +16,7 @@ import { cookies } from "next/headers";
 
 const registerSchema = z.object({
   email: z.email().trim().toLowerCase(),
-  password: z.string().min(8),
+  password: z.string().min(8, "Password must be at least 8 characters"),
 });
 
 export async function POST(request: NextRequest) {

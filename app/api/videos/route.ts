@@ -3,6 +3,7 @@ import * as z from "zod";
 import { db } from "@/database/index";
 import { videosSchema } from "@/database/schema";
 import { getCurrentUser } from "@/helpers/auth";
+import extractVideoId from "@/helpers/extractVideoId";
 import { fetchTranscript } from "youtube-transcript";
 import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
@@ -22,11 +23,6 @@ const TimestampsSchema = z.object({
     }),
   ),
 });
-
-function extractVideoId(url: string): string | null {
-  const match = url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-  return match ? match[1] : null;
-}
 
 export async function POST(request: NextRequest) {
   const user = await getCurrentUser();

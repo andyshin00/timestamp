@@ -1,28 +1,48 @@
-import { redirect, notFound } from "next/navigation";
-import { getCurrentUser } from "@/helpers/auth";
-import { db } from "@/database/index";
-import { videosSchema } from "@/database/schema";
-import { eq } from "drizzle-orm";
-import VideoTabs from "./VideoTabs";
+"use client";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import formatTime from "@/helpers/formatTime";
 
-export default async function VideoPage({
-  params,
-}: {
-  params: Promise<{ id: string }>;
-}) {
-  const user = await getCurrentUser();
-  if (!user) {
-    redirect("/login");
+type Video = {
+  id: number;
+  title: string;
+  channel: string | null;
+  thumbnailUrl: string | null;
+  youtubeId: string;
+  transcript: string | null;
+  timestamps: { time: number; label: string }[];
+  createdAt: string;
+};
+
+export default function VideoPage() {
+  const params = useParams<{ id: string }>();
+  const [video, setVideo] = useState<Video | null>(null);
+  const [error, setError] = useState("");
+  const [tab, setTab] = useState("timestamps");
+  const [startTime, setStartTime] = useState(0);
+
+  useEffect(() => {
+    async function loadVideo() {
+      const res = await fetch(`/api/videos/${params.id}`);
+      const data = await res.json();
+
+      if (!res.ok) {
+        setError(data.error);
+        return;
+      }
+
+      setVideo(data);
+    }
+
+    loadVideo();
+  }, [params.id]);
+
+  if (error) {
+    return <p className="p-6 text-red-600">{error}</p>;
   }
 
-  const { id } = await params;
-  const [video] = await db
-    .select()
-    .from(videosSchema)
-    .where(eq(videosSchema.id, Number(id)));
-
-  if (!video || video.userId !== user.id) {
-    notFound();
+  if (!video) {
+    return <p className="p-6">Loading...</p>;
   }
 
   return (
@@ -46,11 +66,60 @@ export default async function VideoPage({
         </div>
       </div>
 
-      <VideoTabs
-        youtubeId={video.youtubeId}
-        timestamps={video.timestamps}
-        transcript={video.transcript}
-      />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="aspect-video w-full overflow-hidden rounded-md border border-gray-300">
+          <iframe
+            key={startTime}
+            className="h-full w-full"
+            src={`https://www.youtube.com/embed/${video.youtubeId}?start=${startTime}&autoplay=1`}
+            title="YouTube video player"
+            allow="accelerometer;  clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </div>
+
+        <div className="rounded-md border border-gray-300 p-3">
+          <div className="mb-3 flex gap-2">
+            <button
+              onClick={() => setTab("timestamps")}
+              className={`rounded-md border border-gray-300 px-3 py-1 ${
+                tab === "timestamps" ? "bg-gray-100" : ""
+              }`}
+            >
+              Timestamps
+            </button>
+            <button
+              onClick={() => setTab("transcript")}
+              className={`rounded-md border border-gray-300 px-3 py-1 ${
+                tab === "transcript" ? "bg-gray-100" : ""
+              }`}
+            >
+              Transcript
+            </button>
+          </div>
+
+          {tab === "timestamps" && (
+            <ul className="flex flex-col gap-1">
+              {video.timestamps.map((t, i) => (
+                <li key={i}>
+                  <button
+                    onClick={() => setStartTime(t.time)}
+                    className="text-left hover:underline"
+                  >
+                    {formatTime(t.time)} — {t.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {tab === "transcript" && (
+            <p className="whitespace-pre-line text-sm">
+              {video.transcript ?? "No transcript stored for this video."}
+            </p>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

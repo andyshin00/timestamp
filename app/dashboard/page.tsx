@@ -14,13 +14,14 @@ type Video = {
 
 export default function Dashboard() {
   const router = useRouter();
+
   const [url, setUrl] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [videos, setVideos] = useState<Video[]>([]);
 
   async function loadVideos() {
-    const res = await fetch("/api/videos");
+    const res = await fetch("/api/videos", { method: "GET" });
     const data = await res.json();
 
     if (!res.ok) {
@@ -35,7 +36,7 @@ export default function Dashboard() {
     loadVideos();
   }, []);
 
-  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault();
     setLoading(true);
     setError("");
