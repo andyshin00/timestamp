@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import * as z from "zod";
 import { db } from "@/database/index";
 import { videosSchema } from "@/database/schema";
 import { getCurrentUser } from "@/helpers/auth";
@@ -8,21 +7,9 @@ import { fetchTranscript } from "youtube-transcript";
 import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { eq, desc } from "drizzle-orm";
+import { videoRequestSchema, timestampsSchema } from "@/zodSchema";
 
 const client = new Anthropic();
-
-const videoRequestSchema = z.object({
-  youtubeUrl: z.string(),
-});
-
-const TimestampsSchema = z.object({
-  timestamps: z.array(
-    z.object({
-      time: z.number(),
-      label: z.string(),
-    }),
-  ),
-});
 
 export async function POST(request: NextRequest) {
   const user = await getCurrentUser();
@@ -78,7 +65,7 @@ export async function POST(request: NextRequest) {
     thinking: { type: "disabled" },
     output_config: {
       effort: "low",
-      format: zodOutputFormat(TimestampsSchema),
+      format: zodOutputFormat(timestampsSchema),
     },
     messages: [
       {

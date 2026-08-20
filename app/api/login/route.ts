@@ -1,20 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import * as z from "zod";
 import { db } from "@/database/index";
 import { usersSchema } from "@/database/schema";
 import { eq } from "drizzle-orm";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { cookies } from "next/headers";
-
-/*
-1.
-*/
-
-const loginSchema = z.object({
-  email: z.email().trim().toLowerCase(),
-  password: z.string().min(8),
-});
+import { loginSchema } from "@/zodSchema";
 
 export async function POST(request: NextRequest) {
   let body = await request.json();

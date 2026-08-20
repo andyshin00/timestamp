@@ -1,5 +1,4 @@
 "use client";
-import { NextResponse } from "next/server";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -35,7 +34,7 @@ export default function RegisterPage() {
 
     if (!res.ok) {
       setError(data.error);
-      return NextResponse.json({ message: data.error, error: "400" });
+      return;
     }
 
     router.push("/dashboard");
