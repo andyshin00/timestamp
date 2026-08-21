@@ -88,7 +88,8 @@ export default function RegisterPage() {
                   setPassword(e.target.value);
                 }}
                 type="password"
-                placeholder="at least 8 characters"
+                placeholder="at least 8 characters, 1 special, 1 upper character
+                "
               />
             </div>
           </form>
