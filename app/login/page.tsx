@@ -41,65 +41,67 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col justify-center items-center">
-      <Link
-        href="/"
-        className="absolute top-6 left-6 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="size-4" />
-        Back
-      </Link>
-      <Card className="w-full max-w-sm">
-        <CardHeader>
-          <CardTitle className="font-bold">Login to your account</CardTitle>
-          <CardDescription>
-            Dont have an account?{" "}
-            <Link href="/register" className="underline">
-              Register
-            </Link>
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form
-            className="flex flex-col gap-3"
-            id="login-form"
-            onSubmit={handleSubmit}
-          >
-            <div className="flex flex-col">
-              <Label className="py-1 font-bold" htmlFor="email">
-                Email:
-              </Label>
-              <Input
-                id="email"
-                onChange={(e) => {
-                  setEmail(e.target.value);
-                }}
-                type="text"
-                placeholder="em@gmail.com"
-              />
-            </div>
-            <div className="flex flex-col">
-              <Label className="py-1 font-bold" htmlFor="password">
-                Password:
-              </Label>
-              <Input
-                id="password"
-                onChange={(e) => {
-                  setPassword(e.target.value);
-                }}
-                type="password"
-                placeholder="at least 8 characters"
-              />
-            </div>
-          </form>
-        </CardContent>
-        <CardFooter className="flex-col gap-2">
-          {error && <p className="text-red-600">{error}</p>}
-          <Button type="submit" form="login-form" className="w-full ">
-            Login
-          </Button>
-        </CardFooter>
-      </Card>
+    <div className="flex min-h-screen flex-col justify-center items-center">
+      <div className="w-full max-w-sm">
+        <Link
+          href="/"
+          className="mb-2 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        >
+          <ArrowLeft className="size-4" />
+          Back
+        </Link>
+        <Card className="w-full">
+          <CardHeader>
+            <CardTitle className="font-bold">Login to your account</CardTitle>
+            <CardDescription>
+              Dont have an account?{" "}
+              <Link href="/register" className="underline">
+                Register
+              </Link>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form
+              className="flex flex-col gap-3"
+              id="login-form"
+              onSubmit={handleSubmit}
+            >
+              <div className="flex flex-col">
+                <Label className="py-1 font-bold" htmlFor="email">
+                  Email:
+                </Label>
+                <Input
+                  id="email"
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                  type="text"
+                  placeholder="em@gmail.com"
+                />
+              </div>
+              <div className="flex flex-col">
+                <Label className="py-1 font-bold" htmlFor="password">
+                  Password:
+                </Label>
+                <Input
+                  id="password"
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                  }}
+                  type="password"
+                  placeholder="at least 8 characters"
+                />
+              </div>
+            </form>
+          </CardContent>
+          <CardFooter className="flex-col gap-2">
+            {error && <p className="text-red-600">{error}</p>}
+            <Button type="submit" form="login-form" className="w-full ">
+              Login
+            </Button>
+          </CardFooter>
+        </Card>
+      </div>
     </div>
   );
 }

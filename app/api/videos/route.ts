@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/database/index";
 import { videosSchema } from "@/database/schema";
-import { getCurrentUser } from "@/helpers/auth";
+import { getCurrentUser } from "@/helpers/getCurrentUser";
 import extractVideoId from "@/helpers/extractVideoId";
 import { fetchTranscript } from "youtube-transcript";
 import Anthropic from "@anthropic-ai/sdk";
@@ -18,6 +18,7 @@ export async function POST(request: NextRequest) {
   }
 
   const body = await request.json();
+
   const parsed = videoRequestSchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json(
@@ -54,10 +55,19 @@ export async function POST(request: NextRequest) {
       { status: 400 },
     );
   }
+  // raw transcript structure:
+  // [
+  //   { text: "So I'm going to assume", duration: 1800, offset: 0,     lang: "en" },
+  //   { text: "that you are not a farmer.", duration: 2100, offset: 1800, lang: "en" },
+  // ]
 
-  const transcriptText = rawTranscript
+  const transformedTranscript = rawTranscript
     .map((line) => `[${Math.round(line.offset / 1000)}s] ${line.text}`)
     .join("\n");
+
+  // transformed transcript
+  // [0s] So I'm going to assume
+  // [2s] that you are not a farmer
 
   const aiResponse = await client.messages.parse({
     model: "claude-sonnet-5",
@@ -70,7 +80,7 @@ export async function POST(request: NextRequest) {
     messages: [
       {
         role: "user",
-        content: `Given this video transcript with timestamps, identify natural topic sections and give each a short label.\n\n${transcriptText}`,
+        content: `Given this video transcript with timestamps, identify key topic sections and give each a short label.\n\n${transformedTranscript}`,
       },
     ],
   });
@@ -83,7 +93,7 @@ export async function POST(request: NextRequest) {
       title: oembed.title,
       channel: oembed.author_name,
       thumbnailUrl: oembed.thumbnail_url,
-      transcript: transcriptText,
+      transcript: transformedTranscript,
       timestamps: aiResponse.parsed_output!.timestamps,
     })
     .returning();

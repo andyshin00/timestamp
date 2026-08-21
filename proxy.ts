@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "@/helpers/auth";
+import { getCurrentUser } from "@/helpers/getCurrentUser";
 
 const protectedRoutes = ["/dashboard", "/video"];
 const authRoutes = ["/login", "/register"];

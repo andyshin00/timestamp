@@ -44,7 +44,7 @@ export default function RegisterPage() {
     <div className="relative flex min-h-screen flex-col justify-center items-center">
       <Link
         href="/"
-        className="absolute top-6 left-6 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+        className="mb-2 flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
       >
         <ArrowLeft className="size-4" />
         Back

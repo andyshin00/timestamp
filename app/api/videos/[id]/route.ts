@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/database/index";
 import { videosSchema } from "@/database/schema";
-import { getCurrentUser } from "@/helpers/auth";
+import { getCurrentUser } from "@/helpers/getCurrentUser";
 import { eq } from "drizzle-orm";
 
 export async function GET(
@@ -19,7 +19,7 @@ export async function GET(
     .from(videosSchema)
     .where(eq(videosSchema.id, Number(id)));
 
-  if (!video || video.userId !== user.id) {
+  if (!video) {
     return NextResponse.json({ error: "Video not found" }, { status: 404 });
   }
 

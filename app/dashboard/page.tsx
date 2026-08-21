@@ -1,5 +1,4 @@
 "use client";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Link2, Trash2 } from "lucide-react";
@@ -7,7 +6,6 @@ import { Video } from "@/types";
 import Navbar from "@/components/layout/Navbar";
 
 export default function Dashboard() {
-  const router = useRouter();
   const [url, setUrl] = useState("");
   const [error, setError] = useState("");
   const [videos, setVideos] = useState<Video[]>([]);
@@ -65,9 +63,9 @@ export default function Dashboard() {
       <Navbar />
 
       {/* Main Dashboard*/}
-      <main className="mx-auto max-w-5xl px-8 py-10">
+      <main className="mx-auto max-w-5xl p-6">
         {/* Paste a Link Card */}
-        <div className="mt-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="flex size-10 items-center justify-center rounded-lg bg-indigo-600">
               <Link2 className="size-5 text-white" />
