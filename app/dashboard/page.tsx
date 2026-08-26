@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Link2, Trash2 } from "lucide-react";
 import { Video } from "@/types";
 import Navbar from "@/components/layout/Navbar";
+import { fetchVideos, createVideo, deleteVideo } from "@/helpers/videos";
 
 export default function Dashboard() {
   const [url, setUrl] = useState("");
@@ -11,14 +12,12 @@ export default function Dashboard() {
   const [videos, setVideos] = useState<Video[]>([]);
 
   async function loadVideos() {
-    const res = await fetch("/api/videos", { method: "GET" });
-    const data = await res.json();
-
-    if (!res.ok) {
-      setError(data.error);
-      return;
+    try {
+      const data = await fetchVideos();
+      setVideos(data);
+    } catch (err) {
+      setError((err as Error).message);
     }
-    setVideos(data);
   }
 
   useEffect(() => {
@@ -29,32 +28,22 @@ export default function Dashboard() {
     e.preventDefault();
     setError("");
 
-    const res = await fetch("/api/videos", {
-      method: "POST",
-      body: JSON.stringify({ youtubeUrl: url }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      setError(data.error);
-      return;
+    try {
+      await createVideo(url);
+      setUrl("");
+      loadVideos();
+    } catch (err) {
+      setError((err as Error).message);
     }
-
-    setUrl("");
-    loadVideos();
   }
 
   async function handleDelete(id: number) {
-    const res = await fetch(`/api/videos/${id}`, { method: "DELETE" });
-
-    if (!res.ok) {
-      const data = await res.json();
-      setError(data.error);
-      return;
+    try {
+      await deleteVideo(id);
+      setVideos((prev) => prev.filter((video) => video.id !== id));
+    } catch (err) {
+      setError((err as Error).message);
     }
-
-    setVideos((prev) => prev.filter((video) => video.id !== id));
   }
 
   return (

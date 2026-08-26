@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { register } from "@/helpers/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -25,19 +26,12 @@ export default function RegisterPage() {
     e.preventDefault();
     setError("");
 
-    const res = await fetch("./api/register", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      setError(data.error);
-      return;
+    try {
+      await register(email, password);
+      router.push("/dashboard");
+    } catch (err) {
+      setError((err as Error).message);
     }
-
-    router.push("/dashboard");
   }
 
   return (

@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import { login } from "@/helpers/auth";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
@@ -24,20 +25,12 @@ export default function LoginPage() {
   async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault();
     setError("");
-
-    const res = await fetch("./api/login", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      setError(data.error);
-      return;
+    try {
+      await login(email, password);
+      router.push("/dashboard");
+    } catch (err) {
+      setError((err as Error).message);
     }
-
-    router.push("/dashboard");
   }
 
   return (
