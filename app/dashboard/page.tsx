@@ -1,15 +1,18 @@
-"use client";
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { Link2, Trash2 } from "lucide-react";
-import { Video } from "@/types";
-import Navbar from "@/components/layout/Navbar";
-import { fetchVideos, createVideo, deleteVideo } from "@/helpers/videos";
+'use client';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { Link2, Trash2, Inbox } from 'lucide-react';
+import { Video } from '@/types';
+import Navbar from '@/components/layout/Navbar';
+import { fetchVideos, createVideo, deleteVideo } from '@/helpers/videos';
+import { TailSpin } from 'react-loader-spinner';
+import Image from 'next/image';
 
 export default function Dashboard() {
-  const [url, setUrl] = useState("");
-  const [error, setError] = useState("");
+  const [url, setUrl] = useState('');
+  const [error, setError] = useState('');
   const [videos, setVideos] = useState<Video[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   async function loadVideos() {
     try {
@@ -26,14 +29,17 @@ export default function Dashboard() {
 
   async function handleSubmit(e: React.SubmitEvent) {
     e.preventDefault();
-    setError("");
+    setError('');
+    setIsSubmitting(true);
 
     try {
       await createVideo(url);
-      setUrl("");
+      setUrl('');
       loadVideos();
     } catch (err) {
       setError((err as Error).message);
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -77,8 +83,13 @@ export default function Dashboard() {
             <button
               className="shrink-0 rounded-md bg-indigo-600 px-4 py-2 font-medium text-white hover:bg-indigo-700"
               type="submit"
+              disabled={isSubmitting}
             >
-              Get Timestamps
+              {isSubmitting ? (
+                <TailSpin height="20" width="20" />
+              ) : (
+                'Get Timestamps'
+              )}
             </button>
           </form>
           {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
@@ -86,41 +97,57 @@ export default function Dashboard() {
 
         {/* User Library */}
         <h2 className="mt-10 mb-4 text-xl font-bold">Your Library</h2>
-        <div className="flex flex-col gap-4">
-          {videos.map((video) => (
-            <div
-              key={video.id}
-              className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
-            >
-              <Link
-                href={`/video/${video.id}`}
-                className="flex flex-1 items-center gap-4"
-              >
-                {video.thumbnailUrl && (
-                  <img
-                    src={video.thumbnailUrl}
-                    alt=""
-                    className="h-20 w-32 rounded-lg object-cover"
-                  />
-                )}
-                <div>
-                  <p className="font-semibold">{video.title}</p>
-                  <p className="text-sm text-gray-500">
-                    {video.channel}
-                    {video.channel ? " · " : ""}
-                    {new Date(video.createdAt).toLocaleDateString()}
-                  </p>
-                </div>
-              </Link>
-              <button
-                onClick={() => handleDelete(video.id)}
-                className="rounded-md border border-gray-200 p-2 text-red-500 hover:bg-red-50"
-              >
-                <Trash2 className="size-4" />
-              </button>
+        {videos.length === 0 ? (
+          <div className="flex flex-col items-center gap-3 rounded-xl border border-dashed border-gray-300 bg-white py-16 text-center">
+            <div className="flex size-12 items-center justify-center rounded-full bg-gray-100">
+              <Inbox className="size-6 text-gray-400" />
             </div>
-          ))}
-        </div>
+            <div>
+              <p className="font-semibold text-gray-900">No videos yet</p>
+              <p className="mt-1 text-sm text-gray-500">
+                Paste a YouTube link above to get your first timestamps.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4">
+            {videos.map((video) => (
+              <div
+                key={video.id}
+                className="flex items-center gap-4 rounded-xl border border-gray-200 bg-white p-4 shadow-sm"
+              >
+                <Link
+                  href={`/video/${video.id}`}
+                  className="flex flex-1 items-center gap-4"
+                >
+                  {video.thumbnailUrl && (
+                    <Image
+                      src={video.thumbnailUrl}
+                      alt=""
+                      width={128}
+                      height={80}
+                      className="h-20 w-32 rounded-lg object-cover"
+                    />
+                  )}
+                  <div>
+                    <p className="font-semibold">{video.title}</p>
+                    <p className="text-sm text-gray-500">
+                      {video.channel}
+                      {video.channel ? ' · ' : ''}
+                      {new Date(video.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                </Link>
+                <button
+                  onClick={() => handleDelete(video.id)}
+                  className="rounded-md border border-gray-200 p-2 text-red-500 hover:bg-red-50"
+                >
+                  <Trash2 className="size-4" />
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
       </main>
     </div>
   );

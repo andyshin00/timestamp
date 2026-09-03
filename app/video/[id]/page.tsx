@@ -1,29 +1,28 @@
-"use client";
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import formatTime from "@/helpers/formatTime";
-import { Video } from "@/types";
-import Navbar from "@/components/layout/Navbar";
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
+'use client';
+import { useEffect, useState } from 'react';
+import { useParams } from 'next/navigation';
+import formatTime from '@/helpers/formatTime';
+import { fetchVideo } from '@/helpers/videos';
+import { Video } from '@/types';
+import Navbar from '@/components/layout/Navbar';
+import Link from 'next/link';
+import { ArrowLeft } from 'lucide-react';
+import Image from 'next/image';
 
 export default function VideoPage() {
   const params = useParams<{ id: string }>();
   const [video, setVideo] = useState<Video | null>(null);
-  const [error, setError] = useState("");
-  const [tab, setTab] = useState("timestamps");
+  const [error, setError] = useState('');
+  const [tab, setTab] = useState('timestamps');
 
   useEffect(() => {
     async function loadVideo() {
-      const res = await fetch(`/api/videos/${params.id}`);
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error);
-        return;
+      try {
+        const data = await fetchVideo(Number(params.id));
+        setVideo(data);
+      } catch (err) {
+        setError((err as Error).message);
       }
-
-      setVideo(data);
     }
 
     loadVideo();
@@ -52,9 +51,11 @@ export default function VideoPage() {
       <div className="mx-auto max-w-5xl p-6 text-gray-900">
         <div className="mb-4 flex items-center gap-3 rounded-md border border-gray-300 p-3">
           {video.thumbnailUrl && (
-            <img
+            <Image
               src={video.thumbnailUrl}
               alt=""
+              width={96}
+              height={56}
               className="h-14 w-24 rounded object-cover"
             />
           )}
@@ -62,7 +63,7 @@ export default function VideoPage() {
             <p className="font-semibold">{video.title}</p>
             <p className="text-sm text-gray-500">
               {video.channel}
-              {video.channel ? " · " : ""}
+              {video.channel ? ' · ' : ''}
               {new Date(video.createdAt).toLocaleDateString()}
             </p>
           </div>
@@ -83,24 +84,24 @@ export default function VideoPage() {
           <div className="rounded-md border border-gray-300 p-3">
             <div className="mb-3 flex gap-2">
               <button
-                onClick={() => setTab("timestamps")}
+                onClick={() => setTab('timestamps')}
                 className={`rounded-md border border-gray-300 px-3 py-1 ${
-                  tab === "timestamps" ? "bg-gray-300" : ""
+                  tab === 'timestamps' ? 'bg-gray-300' : ''
                 }`}
               >
                 Timestamps
               </button>
               <button
-                onClick={() => setTab("transcript")}
+                onClick={() => setTab('transcript')}
                 className={`rounded-md border border-gray-300 px-3 py-1 ${
-                  tab === "transcript" ? "bg-gray-300" : ""
+                  tab === 'transcript' ? 'bg-gray-300' : ''
                 }`}
               >
                 Transcript
               </button>
             </div>
 
-            {tab === "timestamps" && (
+            {tab === 'timestamps' && (
               <ul className="flex flex-col gap-1">
                 {video.timestamps.map((t, i) => (
                   <li key={i}>
@@ -110,7 +111,7 @@ export default function VideoPage() {
               </ul>
             )}
 
-            {tab === "transcript" && (
+            {tab === 'transcript' && (
               <p className="text-sm">{video.transcript}</p>
             )}
           </div>

@@ -1,9 +1,13 @@
-import { cookies } from "next/headers";
-import jwt from "jsonwebtoken";
+import { cookies, headers } from 'next/headers';
+import jwt from 'jsonwebtoken';
 
 export async function getCurrentUser() {
   const cookieStore = await cookies();
-  const token = cookieStore.get("jwt")?.value;
+  const headerStore = await headers();
+
+  const authHeader = headerStore.get('authorization');
+  const bearerToken = authHeader?.match(/^Bearer\s+(.+)$/i)?.[1];
+  const token = bearerToken ?? cookieStore.get('jwt')?.value;
 
   if (!token) return null;
 
