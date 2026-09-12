@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/database/index';
-import { usersSchema } from '@/database/schema';
-import { eq } from 'drizzle-orm';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { cookies } from 'next/headers';
-import { loginSchema } from '@/zodSchema';
+import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/database/index";
+import { usersSchema } from "@/database/schema";
+import { eq } from "drizzle-orm";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
+import { loginSchema } from "@/zodSchema";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
   // user already exists?
   if (!user) {
     return NextResponse.json(
-      { error: 'Incorrect email or password' },
+      { error: "Incorrect email or password" },
       { status: 400 },
     );
   }
@@ -46,24 +46,24 @@ export async function POST(request: NextRequest) {
 
   if (!passwordCompare) {
     return NextResponse.json(
-      { error: 'Invalid email or password' },
+      { error: "Invalid email or password" },
       { status: 401 },
     );
   }
 
   //sign and generate token
   const token = jwt.sign({ id: user.id }, process.env.JWT_TOKEN!, {
-    expiresIn: '1h',
+    expiresIn: "1h",
   });
 
   const cookieStore = await cookies();
-  cookieStore.set('jwt', token, {
+  cookieStore.set("jwt", token, {
     httpOnly: true, //js cant read it
-    secure: process.env.NODE_ENV === 'production', //use https in prod
-    sameSite: 'strict', //csrf
-    path: '/',
+    secure: process.env.NODE_ENV === "production", //use https in prod
+    sameSite: "strict", //csrf
+    path: "/",
     maxAge: 60 * 60 * 6,
   });
 
-  return NextResponse.json({ message: 'logged in' }, { status: 200 });
+  return NextResponse.json({ message: "logged in", token }, { status: 200 });
 }

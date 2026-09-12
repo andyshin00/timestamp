@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/database/index';
-import { usersSchema } from '@/database/schema';
-import { eq } from 'drizzle-orm';
-import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
-import { cookies } from 'next/headers';
-import { registerSchema } from '@/zodSchema';
+import { NextRequest, NextResponse } from "next/server";
+import { db } from "@/database/index";
+import { usersSchema } from "@/database/schema";
+import { eq } from "drizzle-orm";
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import { cookies } from "next/headers";
+import { registerSchema } from "@/zodSchema";
 
 export async function POST(request: NextRequest) {
   const body = await request.json();
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
   // user already exists?
   if (existingUser) {
     return NextResponse.json(
-      { error: 'Email already exists' },
+      { error: "Email already exists" },
       { status: 400 },
     );
   }
@@ -43,18 +43,21 @@ export async function POST(request: NextRequest) {
     .returning({ id: usersSchema.id });
 
   const token = jwt.sign({ id: newUser.id }, process.env.JWT_TOKEN!, {
-    expiresIn: '1h',
+    expiresIn: "1h",
   });
 
   const cookieStore = await cookies();
 
-  cookieStore.set('jwt', token, {
+  cookieStore.set("jwt", token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict',
-    path: '/',
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
+    path: "/",
     maxAge: 60 * 60 * 6,
   });
 
-  return NextResponse.json({ message: 'Account created', status: '201' });
+  return NextResponse.json(
+    { message: "Account created", token },
+    { status: 201 },
+  );
 }
