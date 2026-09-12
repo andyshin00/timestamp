@@ -1,19 +1,17 @@
-'use client';
-import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import formatTime from '@/helpers/formatTime';
-import { fetchVideo } from '@/helpers/videos';
-import { Video } from '@/types';
-import Navbar from '@/components/layout/Navbar';
-import Link from 'next/link';
-import { ArrowLeft } from 'lucide-react';
-import Image from 'next/image';
+"use client";
+import { useEffect, useState } from "react";
+import { useParams } from "next/navigation";
+import { fetchVideo } from "@/helpers/videos";
+import { Video } from "@/types";
+import Navbar from "@/components/layout/Navbar";
+import VideoResult from "@/components/videos/VideoResult";
+import Link from "next/link";
+import { ArrowLeft } from "lucide-react";
 
 export default function VideoPage() {
   const params = useParams<{ id: string }>();
   const [video, setVideo] = useState<Video | null>(null);
-  const [error, setError] = useState('');
-  const [tab, setTab] = useState('timestamps');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     async function loadVideo() {
@@ -47,75 +45,8 @@ export default function VideoPage() {
         Back
       </Link>
 
-      {/* Top Video Card */}
-      <div className="mx-auto max-w-5xl p-6 text-gray-900">
-        <div className="mb-4 flex items-center gap-3 rounded-md border border-gray-300 p-3">
-          {video.thumbnailUrl && (
-            <Image
-              src={video.thumbnailUrl}
-              alt=""
-              width={96}
-              height={56}
-              className="h-14 w-24 rounded object-cover"
-            />
-          )}
-          <div>
-            <p className="font-semibold">{video.title}</p>
-            <p className="text-sm text-gray-500">
-              {video.channel}
-              {video.channel ? ' · ' : ''}
-              {new Date(video.createdAt).toLocaleDateString()}
-            </p>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-          {/* iframe */}
-          <div className="aspect-video w-full overflow-hidden rounded-md border border-gray-300">
-            <iframe
-              className="h-full w-full"
-              src={`https://www.youtube.com/embed/${video.youtubeId}?autoplay=1`}
-              title="YouTube video player"
-              allow="accelerometer;  clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-            />
-          </div>
-          {/* timestamps/transcript */}
-          <div className="rounded-md border border-gray-300 p-3">
-            <div className="mb-3 flex gap-2">
-              <button
-                onClick={() => setTab('timestamps')}
-                className={`rounded-md border border-gray-300 px-3 py-1 ${
-                  tab === 'timestamps' ? 'bg-gray-300' : ''
-                }`}
-              >
-                Timestamps
-              </button>
-              <button
-                onClick={() => setTab('transcript')}
-                className={`rounded-md border border-gray-300 px-3 py-1 ${
-                  tab === 'transcript' ? 'bg-gray-300' : ''
-                }`}
-              >
-                Transcript
-              </button>
-            </div>
-
-            {tab === 'timestamps' && (
-              <ul className="flex flex-col gap-1">
-                {video.timestamps.map((t, i) => (
-                  <li key={i}>
-                    {formatTime(t.time)} — {t.label}
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            {tab === 'transcript' && (
-              <p className="text-sm">{video.transcript}</p>
-            )}
-          </div>
-        </div>
+      <div className="mx-auto max-w-5xl p-6">
+        <VideoResult video={video} />
       </div>
     </div>
   );

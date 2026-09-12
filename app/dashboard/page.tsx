@@ -1,16 +1,15 @@
-'use client';
-import { useEffect, useState } from 'react';
-import Link from 'next/link';
-import { Link2, Trash2, Inbox } from 'lucide-react';
-import { Video } from '@/types';
-import Navbar from '@/components/layout/Navbar';
-import { fetchVideos, createVideo, deleteVideo } from '@/helpers/videos';
-import { TailSpin } from 'react-loader-spinner';
-import Image from 'next/image';
+"use client";
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Trash2, Inbox } from "lucide-react";
+import { Video } from "@/types";
+import Navbar from "@/components/layout/Navbar";
+import PasteLinkForm from "@/components/videos/PasteLinkForm";
+import { fetchVideos, createVideo, deleteVideo } from "@/helpers/videos";
+import Image from "next/image";
 
 export default function Dashboard() {
-  const [url, setUrl] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [videos, setVideos] = useState<Video[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -24,20 +23,22 @@ export default function Dashboard() {
   }
 
   useEffect(() => {
+    // loadVideos is also called from handleSubmit to refresh the library
+    // after creating a video, so it can't be defined only inside this effect.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     loadVideos();
   }, []);
 
-  async function handleSubmit(e: React.SubmitEvent) {
-    e.preventDefault();
-    setError('');
+  async function handleSubmit(url: string) {
+    setError("");
     setIsSubmitting(true);
 
     try {
       await createVideo(url);
-      setUrl('');
-      loadVideos();
+      await loadVideos();
     } catch (err) {
       setError((err as Error).message);
+      throw err;
     } finally {
       setIsSubmitting(false);
     }
@@ -60,40 +61,11 @@ export default function Dashboard() {
       {/* Main Dashboard*/}
       <main className="mx-auto max-w-5xl p-6">
         {/* Paste a Link Card */}
-        <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
-          <div className="flex items-center gap-3">
-            <div className="flex size-10 items-center justify-center rounded-lg bg-indigo-600">
-              <Link2 className="size-5 text-white" />
-            </div>
-            <div>
-              <h2 className="font-semibold">Paste a YouTube Link</h2>
-              <p className="text-sm text-gray-500">
-                This will extract timestamps and transcript for you.
-              </p>
-            </div>
-          </div>
-          <form onSubmit={handleSubmit} className="mt-4 flex gap-3">
-            <input
-              onChange={(e) => setUrl(e.currentTarget.value)}
-              value={url}
-              type="text"
-              placeholder="https://www.youtube.com/watch?v=..."
-              className="min-w-0 flex-1 rounded-md border border-gray-300 py-1 px-3"
-            />
-            <button
-              className="shrink-0 rounded-md bg-indigo-600 px-4 py-2 font-medium text-white hover:bg-indigo-700"
-              type="submit"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <TailSpin height="20" width="20" />
-              ) : (
-                'Get Timestamps'
-              )}
-            </button>
-          </form>
-          {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
-        </div>
+        <PasteLinkForm
+          onSubmit={handleSubmit}
+          isSubmitting={isSubmitting}
+          error={error}
+        />
 
         {/* User Library */}
         <h2 className="mt-10 mb-4 text-xl font-bold">Your Library</h2>
@@ -133,7 +105,7 @@ export default function Dashboard() {
                     <p className="font-semibold">{video.title}</p>
                     <p className="text-sm text-gray-500">
                       {video.channel}
-                      {video.channel ? ' · ' : ''}
+                      {video.channel ? " · " : ""}
                       {new Date(video.createdAt).toLocaleDateString()}
                     </p>
                   </div>
