@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Link2, Sparkles, MousePointerClick, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import DemoPanel from "@/components/marketing/DemoPanel";
+import TryItPanel from "@/components/marketing/TryItPanel";
 
 const STEPS = [
   {
@@ -45,37 +45,24 @@ export default function Home() {
 
       <main className="flex-1">
         {/* Hero */}
-        <section className="mx-auto grid max-w-6xl gap-12 px-6 py-16 sm:px-10 lg:grid-cols-2 lg:items-center lg:py-24">
-          <div>
-            <p className="mb-3 text-sm font-semibold text-indigo-600">
-              AI-generated YouTube timestamps
-            </p>
-            <h1 className="text-4xl font-bold tracking-tight text-balance sm:text-5xl">
-              Every video, outlined for you.
-            </h1>
-            <p className="mt-4 max-w-md text-lg text-muted-foreground">
-              Paste a link and Timestamp reads the transcript, finds the key
-              moments, and hands you a list you can click straight into the
-              video.
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Button
-                size="lg"
-                className="bg-indigo-600 text-white hover:bg-indigo-700"
-              >
-                <Link href="/register">Get started free</Link>
-              </Button>
-              <Button size="lg" variant="outline">
-                <Link href="/login">Log in</Link>
-              </Button>
-            </div>
-          </div>
+        <section className="mx-auto max-w-3xl px-6 py-16 text-center sm:px-10 lg:py-20">
+          <p className="mb-3 text-sm font-semibold text-indigo-600">
+            AI-generated YouTube timestamps
+          </p>
+          <h1 className="text-4xl font-bold tracking-tight text-balance sm:text-5xl">
+            Every video, outlined for you.
+          </h1>
+          <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
+            Paste a link below and Timestamp reads the transcript, finds the
+            key moments, and hands you a list you can click straight into the
+            video.
+          </p>
+        </section>
 
-          <div className="flex flex-col items-center gap-2 lg:items-end">
-            <DemoPanel />
-            <p className="text-xs text-muted-foreground">
-              Example output — try it with your own video.
-            </p>
+        {/* Try it free — the actual tool, unauthenticated */}
+        <section className="px-6 pb-16 sm:px-10 lg:pb-24">
+          <div className="mx-auto max-w-3xl">
+            <TryItPanel />
           </div>
         </section>
 
