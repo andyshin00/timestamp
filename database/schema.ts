@@ -13,6 +13,14 @@ export const usersSchema = pgTable("users", {
   hashedPassword: text("hashedPassword").notNull(),
 });
 
+// Tracks anonymous "try it free" generations on the root page, so we can
+// rate-limit by IP without requiring an account.
+export const previewRequestsSchema = pgTable("previewRequests", {
+  id: serial("id").primaryKey(),
+  ip: text("ip").notNull(),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
 export const videosSchema = pgTable("videos", {
   id: serial("id").primaryKey(),
   userId: integer("userId")
