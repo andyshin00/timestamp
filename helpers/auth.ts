@@ -15,3 +15,10 @@ export async function register(email: string, password: string): Promise<void> {
   const data = await res.json();
   if (!res.ok) throw new Error(data.error);
 }
+
+export async function getMe(): Promise<{ email: string }> {
+  const res = await fetch("/api/me");
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error);
+  return data;
+}
