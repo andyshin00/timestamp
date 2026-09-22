@@ -23,9 +23,8 @@ export type GeneratedVideo = {
   timestamps: { time: number; label: string }[];
 };
 
-// Shared by POST /api/videos (saves the result) and POST /api/videos/preview
-// (doesn't) — everything about turning a YouTube URL into timestamps lives
-// here so the two routes can't drift apart.
+// Everything about turning a YouTube URL into timestamps lives here so
+// POST /api/videos can just call it and save the result.
 export async function generateVideoData(
   youtubeUrl: string,
 ): Promise<GeneratedVideo> {
@@ -46,9 +45,7 @@ export async function generateVideoData(
   try {
     rawTranscript = await fetchTranscript(videoId, { lang: "en" });
   } catch {
-    throw new GenerationError(
-      "This video doesn't have a transcript available",
-    );
+    throw new GenerationError("This video doesn't have a transcript available");
   }
 
   const transformedTranscript = rawTranscript

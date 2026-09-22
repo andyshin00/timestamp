@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { Link2, Sparkles, MousePointerClick, Play } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import TryItPanel from "@/components/marketing/TryItPanel";
 
 const STEPS = [
   {
@@ -57,13 +56,6 @@ export default function Home() {
             key moments, and hands you a list you can click straight into the
             video.
           </p>
-        </section>
-
-        {/* Try it free — the actual tool, unauthenticated */}
-        <section className="px-6 pb-16 sm:px-10 lg:pb-24">
-          <div className="mx-auto max-w-3xl">
-            <TryItPanel />
-          </div>
         </section>
 
         {/* How it works */}

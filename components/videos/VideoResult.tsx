@@ -2,7 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import formatTime from "@/helpers/formatTime";
-import type { VideoResultData } from "@/types";
+import type { Video } from "@/types";
 
 interface YTPlayer {
   seekTo: (seconds: number, allowSeekAhead: boolean) => void;
@@ -21,11 +21,8 @@ declare global {
 
 const YT_API_SRC = "https://www.youtube.com/iframe_api";
 
-// The video embed + timestamps/transcript panel. Used both on the saved
-// video page (fetched by id) and the root page's try-it-free panel
-// (a freshly-generated, unsaved result) — anything that needs a database
-// row (save/delete/library) lives outside this component, not in it.
-// Transcript lines are stored as "[12s] some text", one per line. Parsed
+// The video embed + timestamps/transcript panel, used on the saved video
+// page. Transcript lines are stored as "[12s] some text", one per line. Parsed
 // here so each line can be rendered on its own row instead of running
 // together as one paragraph (newlines collapse to spaces in HTML).
 const TRANSCRIPT_LINE = /^\[(\d+)s\]\s*(.*)$/;
@@ -40,7 +37,7 @@ function parseTranscript(transcript: string) {
     .filter((line): line is { time: number; text: string } => line !== null);
 }
 
-export default function VideoResult({ video }: { video: VideoResultData }) {
+export default function VideoResult({ video }: { video: Video }) {
   const [tab, setTab] = useState("timestamps");
   const [transcriptExpanded, setTranscriptExpanded] = useState(false);
   const playerRef = useRef<YTPlayer | null>(null);
