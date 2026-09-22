@@ -30,7 +30,7 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-gray-50 px-6 py-12">
       <Link href="/" className="mb-6 flex items-center gap-2">
-        <div className="flex size-8 items-center justify-center rounded-lg bg-indigo-600">
+        <div className="flex size-8 items-center justify-center rounded-lg bg-primary">
           <Play className="size-4 fill-white text-white" />
         </div>
         <span className="text-lg font-bold">Timestamp</span>
@@ -40,7 +40,7 @@ export default function LoginPage() {
         <h1 className="font-bold">Login to your account</h1>
         <p className="mt-1 text-sm text-gray-500">
           Dont have an account?{" "}
-          <Link href="/register" className="text-indigo-600 hover:underline">
+          <Link href="/register" className="text-primary hover:underline">
             Register
           </Link>
         </p>
@@ -59,7 +59,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="em@gmail.com"
-              className="rounded-md border border-gray-300 px-3 py-1.5 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              className="rounded-md border border-gray-300 px-3 py-1.5 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
           </div>
           <div className="flex flex-col gap-1">
@@ -75,7 +75,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="at least 8 characters"
-              className="rounded-md border border-gray-300 px-3 py-1.5 text-sm outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+              className="rounded-md border border-gray-300 px-3 py-1.5 text-sm outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
           </div>
 
@@ -84,7 +84,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="rounded-md bg-indigo-600 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-700 disabled:opacity-50"
+            className="rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
           >
             {isSubmitting ? "Logging in…" : "Login"}
           </button>

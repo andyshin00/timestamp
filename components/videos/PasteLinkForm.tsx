@@ -32,7 +32,7 @@ export default function PasteLinkForm({
   return (
     <div className="rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
       <div className="flex items-center gap-3">
-        <div className="flex size-10 items-center justify-center rounded-lg bg-indigo-600">
+        <div className="flex size-10 items-center justify-center rounded-lg bg-primary">
           <Link2 className="size-5 text-white" />
         </div>
         <div>
@@ -49,7 +49,7 @@ export default function PasteLinkForm({
           className="min-w-0 flex-1 rounded-md border border-gray-300 py-1 px-3"
         />
         <button
-          className="shrink-0 rounded-md bg-indigo-600 px-4 py-2 font-medium text-white hover:bg-indigo-700"
+          className="shrink-0 rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground hover:bg-primary/90"
           type="submit"
           disabled={isSubmitting}
         >

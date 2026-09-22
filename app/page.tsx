@@ -27,7 +27,7 @@ export default function Home() {
       {/* Header */}
       <header className="flex items-center justify-between border-b border-border px-6 py-4 sm:px-10">
         <div className="flex items-center gap-2">
-          <div className="flex size-8 items-center justify-center rounded-lg bg-indigo-600">
+          <div className="flex size-8 items-center justify-center rounded-lg bg-primary">
             <Play className="size-4 fill-white text-white" />
           </div>
           <span className="text-lg font-bold">Timestamp</span>
@@ -36,7 +36,7 @@ export default function Home() {
           <Button variant="ghost">
             <Link href="/login">Log in</Link>
           </Button>
-          <Button className="bg-indigo-600 text-white hover:bg-indigo-700">
+          <Button>
             <Link href="/register">Get started free</Link>
           </Button>
         </div>
@@ -45,7 +45,7 @@ export default function Home() {
       <main className="flex-1">
         {/* Hero */}
         <section className="mx-auto max-w-3xl px-6 py-16 text-center sm:px-10 lg:py-20">
-          <p className="mb-3 text-sm font-semibold text-indigo-600">
+          <p className="mb-3 text-sm font-semibold text-primary">
             AI-generated YouTube timestamps
           </p>
           <h1 className="text-4xl font-bold tracking-tight text-balance sm:text-5xl">
@@ -68,7 +68,7 @@ export default function Home() {
                   key={step.title}
                   className="flex flex-col items-center text-center"
                 >
-                  <div className="flex size-11 items-center justify-center rounded-full bg-indigo-100 text-indigo-600">
+                  <div className="flex size-11 items-center justify-center rounded-full bg-accent text-accent-foreground">
                     <step.icon className="size-5" />
                   </div>
                   <p className="mt-4 text-xs font-semibold text-muted-foreground">

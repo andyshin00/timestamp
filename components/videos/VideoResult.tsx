@@ -140,9 +140,9 @@ export default function VideoResult({ video }: { video: Video }) {
                 <li key={i}>
                   <button
                     onClick={() => handleSeek(t.time)}
-                    className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm hover:bg-indigo-50"
+                    className="flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm hover:bg-accent"
                   >
-                    <span className="font-mono text-xs text-indigo-600">
+                    <span className="font-mono text-xs text-primary">
                       {formatTime(t.time)}
                     </span>
                     <span>{t.label}</span>
@@ -171,7 +171,7 @@ export default function VideoResult({ video }: { video: Video }) {
                 </div>
                 <button
                   onClick={() => setTranscriptExpanded((prev) => !prev)}
-                  className="mt-2 text-xs font-medium text-indigo-600 hover:underline"
+                  className="mt-2 text-xs font-medium text-primary hover:underline"
                 >
                   {transcriptExpanded ? "Show less" : "Show full transcript"}
                 </button>
