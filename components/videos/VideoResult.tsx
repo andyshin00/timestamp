@@ -13,7 +13,10 @@ interface YTPlayer {
 declare global {
   interface Window {
     YT: {
-      Player: new (elementId: string, options: object) => YTPlayer;
+      Player: new (
+        element: string | HTMLElement,
+        options: object,
+      ) => YTPlayer;
     };
     onYouTubeIframeAPIReady: () => void;
   }
@@ -40,14 +43,31 @@ function parseTranscript(transcript: string) {
 export default function VideoResult({ video }: { video: Video }) {
   const [tab, setTab] = useState("timestamps");
   const [transcriptExpanded, setTranscriptExpanded] = useState(false);
+  const [isPlayerReady, setIsPlayerReady] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<YTPlayer | null>(null);
 
   useEffect(() => {
+    setIsPlayerReady(false);
+
+    const container = containerRef.current;
+    if (!container) return;
+
+    // YT.Player().destroy() removes its <iframe> straight out of the DOM,
+    // which React never finds out about. Under React Strict Mode's
+    // mount-cleanup-mount dance in dev, that destroy can fire between two
+    // effect runs and delete the element the second run expects to reuse —
+    // so instead of targeting anything React renders, hand the API a fresh
+    // element on every run that only this effect ever owns.
+    container.replaceChildren();
+    const target = document.createElement("div");
+    container.appendChild(target);
+
     function createPlayer() {
-      playerRef.current = new window.YT.Player(
-        `yt-player-${video.youtubeId}`,
-        {},
-      );
+      playerRef.current = new window.YT.Player(target, {
+        videoId: video.youtubeId,
+        events: { onReady: () => setIsPlayerReady(true) },
+      });
     }
 
     if (window.YT && window.YT.Player) {
@@ -58,18 +78,27 @@ export default function VideoResult({ video }: { video: Video }) {
         tag.src = YT_API_SRC;
         document.body.appendChild(tag);
       }
-      window.onYouTubeIframeAPIReady = createPlayer;
+      // onYouTubeIframeAPIReady only ever fires once, globally, the first
+      // time the script finishes loading — chain onto whatever's already
+      // registered instead of overwriting it, so a remount doesn't strand
+      // an earlier caller.
+      const previousCallback = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = () => {
+        previousCallback?.();
+        createPlayer();
+      };
     }
 
     return () => {
       playerRef.current?.destroy();
       playerRef.current = null;
+      setIsPlayerReady(false);
     };
   }, [video.youtubeId]);
 
   function handleSeek(time: number) {
     const player = playerRef.current;
-    if (player) {
+    if (player && isPlayerReady) {
       player.seekTo(time, true);
       player.playVideo();
     }
@@ -102,23 +131,18 @@ export default function VideoResult({ video }: { video: Video }) {
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        {/* iframe */}
-        <div className="aspect-video w-full overflow-hidden rounded-md border border-gray-300">
-          <iframe
-            id={`yt-player-${video.youtubeId}`}
-            className="h-full w-full"
-            src={`https://www.youtube.com/embed/${video.youtubeId}?autoplay=1&enablejsapi=1`}
-            title="YouTube video player"
-            allow="accelerometer;  clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
+        {/* YouTube player — its <iframe> is created entirely by the YT API,
+            not by this JSX, so the API is free to replace/destroy it
+            without fighting React over DOM ownership. */}
+        <div className="relative aspect-video w-full overflow-hidden rounded-md border border-gray-300 [&_iframe]:absolute [&_iframe]:inset-0 [&_iframe]:h-full [&_iframe]:w-full">
+          <div ref={containerRef} className="h-full w-full" />
         </div>
         {/* timestamps/transcript */}
         <div className="rounded-md border border-gray-300 p-3">
           <div className="mb-3 flex gap-2">
             <button
               onClick={() => setTab("timestamps")}
-              className={`rounded-md border border-gray-300 px-3 py-1 ${
+              className={`cursor-pointer rounded-md border border-gray-300 px-3 py-1 ${
                 tab === "timestamps" ? "bg-gray-300" : ""
               }`}
             >
@@ -126,7 +150,7 @@ export default function VideoResult({ video }: { video: Video }) {
             </button>
             <button
               onClick={() => setTab("transcript")}
-              className={`rounded-md border border-gray-300 px-3 py-1 ${
+              className={`cursor-pointer rounded-md border border-gray-300 px-3 py-1 ${
                 tab === "transcript" ? "bg-gray-300" : ""
               }`}
             >

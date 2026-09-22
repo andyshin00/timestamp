@@ -46,20 +46,19 @@ export default function Navbar() {
       <div ref={menuRef} className="relative">
         <button
           onClick={() => setIsOpen((prev) => !prev)}
-          className="flex size-9 items-center justify-center rounded-full bg-primary font-semibold text-primary-foreground"
+          className="flex size-9 cursor-pointer items-center justify-center rounded-full bg-primary font-semibold text-primary-foreground"
         >
           {initial}
         </button>
 
         {isOpen && (
           <div className="absolute right-0 top-full mt-2 w-56 rounded-md border border-gray-200 bg-white p-3 shadow-lg">
-            <p className="break-all text-sm font-medium text-gray-900">
+            <p className="break-all px-2 text-sm font-medium text-gray-900">
               {email}
             </p>
-            <hr className="my-2 border-gray-200" />
             <button
               onClick={handleLogout}
-              className="w-full text-left text-sm text-red-500 hover:underline"
+              className="mt-2 w-full cursor-pointer rounded-md px-2 py-1.5 text-left text-sm text-gray-900 hover:bg-accent hover:text-primary"
             >
               Log Out
             </button>

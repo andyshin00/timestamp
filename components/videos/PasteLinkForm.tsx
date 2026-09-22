@@ -49,7 +49,7 @@ export default function PasteLinkForm({
           className="min-w-0 flex-1 rounded-md border border-gray-300 py-1 px-3"
         />
         <button
-          className="shrink-0 rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground hover:bg-primary/90"
+          className="shrink-0 cursor-pointer rounded-md bg-primary px-4 py-2 font-medium text-primary-foreground hover:bg-primary/90"
           type="submit"
           disabled={isSubmitting}
         >
