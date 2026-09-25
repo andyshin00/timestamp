@@ -30,7 +30,7 @@ export default function Home() {
           <div className="flex size-8 items-center justify-center rounded-lg bg-primary">
             <Play className="size-4 fill-white text-white" />
           </div>
-          <span className="text-lg font-bold">Timestamp</span>
+          <span className="text-lg font-bold">TimestampGen</span>
         </div>
         <div className="flex items-center gap-2">
           <Button variant="ghost">
@@ -52,7 +52,7 @@ export default function Home() {
             Every video, outlined for you.
           </h1>
           <p className="mx-auto mt-4 max-w-xl text-lg text-muted-foreground">
-            Paste a link below and Timestamp reads the transcript, finds the
+            Paste a link below and TimestampGen reads the transcript, finds the
             key moments, and hands you a list you can click straight into the
             video.
           </p>
@@ -87,7 +87,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-border px-6 py-8 text-center text-sm text-muted-foreground sm:px-10">
-        © {new Date().getFullYear()} Timestamp
+        © {new Date().getFullYear()} TimestampGen
       </footer>
     </div>
   );

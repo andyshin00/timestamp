@@ -33,7 +33,7 @@ export default function RegisterPage() {
         <div className="flex size-8 items-center justify-center rounded-lg bg-primary">
           <Play className="size-4 fill-white text-white" />
         </div>
-        <span className="text-lg font-bold">Timestamp</span>
+        <span className="text-lg font-bold">TimestampGen</span>
       </Link>
 
       <div className="w-full max-w-sm rounded-xl border border-gray-200 bg-white p-6 shadow-sm">

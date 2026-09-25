@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Timestamp — AI YouTube timestamps",
+  title: "TimestampGen — AI YouTube timestamps",
   description:
     "Paste a YouTube link and get an AI-generated, clickable timestamp outline in seconds.",
 };

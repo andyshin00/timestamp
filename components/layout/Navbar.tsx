@@ -40,7 +40,7 @@ export default function Navbar() {
         <div className="flex size-9 items-center justify-center rounded-lg bg-primary">
           <Play className="size-5 fill-white text-white" />
         </div>
-        <span className="text-lg font-bold">Timestamp</span>
+        <span className="text-lg font-bold">TimestampGen</span>
       </div>
 
       <div ref={menuRef} className="relative">

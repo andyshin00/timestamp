@@ -20,7 +20,7 @@ export default function App() {
   return (
     <div className="w-90 p-4">
       <div className="mb-2 flex items-center justify-between">
-        <h1 className="text-lg font-bold">Timestamps</h1>
+        <h1 className="text-lg font-bold">TimestampGen</h1>
         {auth === "in" && (
           <button
             className="text-xs text-gray-500 underline"
