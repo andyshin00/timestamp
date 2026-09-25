@@ -1,5 +1,4 @@
 import extractVideoId from "@/helpers/extractVideoId";
-import { fetchTranscript } from "youtube-transcript";
 import Anthropic from "@anthropic-ai/sdk";
 import { zodOutputFormat } from "@anthropic-ai/sdk/helpers/zod";
 import { timestampsSchema } from "@/zodSchema";
@@ -41,14 +40,24 @@ export async function generateVideoData(
   }
   const oembed = await oembedRes.json();
 
-  let rawTranscript;
-  try {
-    rawTranscript = await fetchTranscript(videoId, { lang: "en" });
-  } catch {
+  // Scraping YouTube's caption endpoints directly (the old approach) gets
+  // blocked from datacenter IPs like Vercel's — Supadata proxies around
+  // that, so this runs the same in prod as it does locally.
+  const transcriptRes = await fetch(
+    `https://api.supadata.ai/v1/transcript?url=${encodeURIComponent(youtubeUrl)}&lang=en`,
+    { headers: { "x-api-key": process.env.SUPADATA_API_KEY! } },
+  );
+  if (!transcriptRes.ok) {
+    console.error(
+      `Supadata transcript fetch failed (${transcriptRes.status}):`,
+      await transcriptRes.text(),
+    );
     throw new GenerationError("This video doesn't have a transcript available");
   }
+  const transcriptData: { content: { offset: number; text: string }[] } =
+    await transcriptRes.json();
 
-  const transformedTranscript = rawTranscript
+  const transformedTranscript = transcriptData.content
     .map((line) => `[${Math.round(line.offset / 1000)}s] ${line.text}`)
     .join("\n");
 
