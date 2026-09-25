@@ -43,13 +43,15 @@ function parseTranscript(transcript: string) {
 export default function VideoResult({ video }: { video: Video }) {
   const [tab, setTab] = useState("timestamps");
   const [transcriptExpanded, setTranscriptExpanded] = useState(false);
-  const [isPlayerReady, setIsPlayerReady] = useState(false);
+  // Which video's player has fired onReady, if any — rather than a plain
+  // boolean reset by the effect (flagged by react-hooks/set-state-in-effect
+  // for calling setState synchronously in the effect body), readiness is
+  // derived by comparing this to the current video below.
+  const [readyVideoId, setReadyVideoId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<YTPlayer | null>(null);
 
   useEffect(() => {
-    setIsPlayerReady(false);
-
     const container = containerRef.current;
     if (!container) return;
 
@@ -66,7 +68,7 @@ export default function VideoResult({ video }: { video: Video }) {
     function createPlayer() {
       playerRef.current = new window.YT.Player(target, {
         videoId: video.youtubeId,
-        events: { onReady: () => setIsPlayerReady(true) },
+        events: { onReady: () => setReadyVideoId(video.youtubeId) },
       });
     }
 
@@ -92,9 +94,10 @@ export default function VideoResult({ video }: { video: Video }) {
     return () => {
       playerRef.current?.destroy();
       playerRef.current = null;
-      setIsPlayerReady(false);
     };
   }, [video.youtubeId]);
+
+  const isPlayerReady = readyVideoId === video.youtubeId;
 
   function handleSeek(time: number) {
     const player = playerRef.current;
